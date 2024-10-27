@@ -38,8 +38,7 @@ function renderUsers() {
     const user = filteredData[i];
     const userDiv = document.createElement('div');
     userDiv.className = 'user';
-    const userNumber = i + 1;
-    userDiv.textContent = `${userNumber}. ${user.username} - Level: ${user.level}, EXP: ${user.exp}`;
+    userDiv.textContent = `${data.indexOf(user) + 1}. ${user.username} - Level: ${user.level}, EXP: ${user.exp}`;
     userList.appendChild(userDiv);
   }
 
