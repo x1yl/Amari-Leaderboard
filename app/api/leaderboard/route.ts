@@ -38,7 +38,12 @@ export async function GET(request: Request) {
 
     // Fetch leaderboard data
     const leaderboardResponse = await fetch(
-      `https://proxy.life23243.workers.dev/?https://amaribot.com/api/v1/guild/raw/leaderboard/${guildId}?=`
+      `https://amaribot.com/api/v1/guild/raw/leaderboard/${guildId}?=`,
+      {
+        headers: {
+          Authorization: process.env.AMARI_API_KEY || "",
+        },
+      }
     );
 
     if (!leaderboardResponse.ok) {

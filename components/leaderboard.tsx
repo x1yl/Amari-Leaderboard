@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search } from "lucide-react";
@@ -26,8 +27,10 @@ interface LeaderboardProps {
 }
 
 export function Leaderboard({ guildID }: LeaderboardProps) {
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [serverQuery, setServerQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -127,6 +130,12 @@ export function Leaderboard({ guildID }: LeaderboardProps) {
     };
   }, [loadMoreUsers, isLoadingMore, initialLoadComplete]);
 
+  const handleServerSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && serverQuery.trim()) {
+      router.push(`/leaderboard/${serverQuery.trim()}`);
+    }
+  };
+
   if (isLoading || !isPreloaded) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 text-white">
@@ -144,24 +153,40 @@ export function Leaderboard({ guildID }: LeaderboardProps) {
 
   return (
     <div className="space-y-4">
-      {guildInfo && (
-        <div className="flex items-center gap-4 mb-6">
-          {guildInfo.iconUrl ? (
-            <Image
-              src={guildInfo.iconUrl}
-              alt={guildInfo.name}
-              width={64}
-              height={64}
-              className="rounded-full"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-[#2f3136] flex items-center justify-center text-2xl text-white">
-              {guildInfo.name[0]}
-            </div>
+      <div className="flex justify-between items-center gap-4 mb-6">
+        <div className="flex items-center gap-4">
+          {guildInfo && (
+            <>
+              {guildInfo.iconUrl ? (
+                <Image
+                  src={guildInfo.iconUrl}
+                  alt={guildInfo.name}
+                  width={64}
+                  height={64}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-[#2f3136] flex items-center justify-center text-2xl text-white">
+                  {guildInfo.name[0]}
+                </div>
+              )}
+              <h1 className="text-2xl font-bold text-white">{guildInfo.name}</h1>
+            </>
           )}
-          <h1 className="text-2xl font-bold text-white">{guildInfo.name}</h1>
         </div>
-      )}
+        <div className="relative max-w-[200px]">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            type="text"
+            placeholder="Enter server ID"
+            value={serverQuery}
+            onChange={(e) => setServerQuery(e.target.value)}
+            onKeyDown={handleServerSearch}
+            className="pl-10 bg-[#2f3136] border-gray-700 text-white"
+          />
+        </div>
+      </div>
+
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
