@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "An unofficial, no-login viewer for Amari Discord leaderboards.",
+  "engines": {
+    "node": "26.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
